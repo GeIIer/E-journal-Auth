@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: service_auth
+  datasource:
+    url: jdbc:postgresql://localhost:5454/journal
+    password: geller
+    username: 13112001UJL
+  jpa:
+    hibernate:
+      ddl-auto: update
+  data:
+    jdbc:
+      dialect: postgresql
+
+server:
+  port: 8081
+
+security:
+  jwt:
+    secret:
+      access: "asdajdlajijpoiajdaeruyph;ds.bv/d\aw'ewr437eflkasfj3r-vbjxdcs3tr]pfkbwdgfiucrt]3-0"
+      refresh: "jkhsdgg';klsadgpojaerhpojdfb[pkeargpojdfb[psdfjwerpojdfhjxpojwejpopojsdfokiweg[f"
+    issuer: "http://authService"
+
