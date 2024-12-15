@@ -44,8 +44,9 @@ public class AuthUserService implements AuthService<UserDto, UserRegistrationReq
 
     @Override
     public Mono<Token> generateToken(AuthForm form) {
-        return userService.findByUsername(form.getUsername())
-                .switchIfEmpty(Mono.error(new UsernameNotFoundException(String.format("Пользователь с такими данными не найден %s", form.getUsername()))))
+        return Mono.just(userService.findByUsername(form.getUsername()).orElseThrow(
+                        () -> new UsernameNotFoundException(String.format("Пользователь с такими данными не найден %s", form.getUsername()))
+                ))
                 .handle((user, sink) -> {
                     boolean checkPassword = passwordEncoder.matches(form.getPassword(), user.getPassword());
                     if (checkPassword) {
@@ -57,12 +58,12 @@ public class AuthUserService implements AuthService<UserDto, UserRegistrationReq
     }
 
     public Mono<RegistrationResponseDto> signUp(UserRegistrationRequestDto register) {
-        userService.findByEmail(register.getEmail()).blockOptional().orElseThrow(
-                () -> new AlreadyExistException("Email уже зарегистрирован")
-        );
-        userService.findByUsername(register.getUsername()).blockOptional().orElseThrow(
-                () -> new AlreadyExistException("Username уже зарегистрирован")
-        );
+        if (userService.findByEmail(register.getEmail()).isPresent()) {
+            throw new AlreadyExistException("Email уже зарегистрирован");
+        }
+        if (userService.findByUsername(register.getUsername()).isPresent()) {
+            throw new AlreadyExistException("Username уже зарегистрирован");
+        }
         User newUser = User.builder()
                 .username(register.getUsername())
                 .password(passwordEncoder.encode(register.getPassword()))
@@ -73,7 +74,7 @@ public class AuthUserService implements AuthService<UserDto, UserRegistrationReq
                 .lastName(register.getLastName())
                 .phone(register.getPhone())
                 .build();
-        return userService.save(newUser)
+        return Mono.just(userService.save(newUser))
                 .flatMap(userDto -> Mono.just(RegistrationResponseDto.builder()
                         .username(userDto.getUsername())
                         .email(userDto.getEmail())
@@ -84,8 +85,9 @@ public class AuthUserService implements AuthService<UserDto, UserRegistrationReq
     @Override
     public Mono<Token> refreshToken(Token token) {
         Long userId = jwtService.parseRefreshJwt(token.getRefreshToken());
-        return userService.findById(userId)
-                .switchIfEmpty(Mono.error(new UsernameNotFoundException(String.format("Пользователь с такими данными не найден %s", userId))))
+        return Mono.just(userService.findById(userId).orElseThrow(
+                        () -> new UsernameNotFoundException(String.format("Пользователь с такими данными не найден %s", userId))
+                ))
                 .handle(this::generateUserToken);
     }
 

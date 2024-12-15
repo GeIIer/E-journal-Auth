@@ -6,7 +6,6 @@ import org.example.service_auth.dto.AccessTokenValue;
 import org.example.service_auth.dto.AuthForm;
 import org.example.service_auth.dto.Token;
 import org.example.service_auth.dto.enums.ResponseTypeEnum;
-import org.example.service_auth.dto.registration.BaseRegistrationRequestDto;
 import org.example.service_auth.dto.registration.RegistrationResponseDto;
 import org.example.service_auth.dto.registration.UserRegistrationRequestDto;
 import org.example.service_auth.jwt.JwtService;
@@ -49,7 +48,7 @@ public class AuthController {
     }
 
     @PostMapping("/sign-up")
-    public Mono<RegistrationResponseDto> signUp(@RequestBody BaseRegistrationRequestDto requestDto) {
+    public Mono<RegistrationResponseDto> signUp(@RequestBody UserRegistrationRequestDto requestDto) {
         for (AuthService authService : authServices) {
             if (authService.supportType(requestDto.getResponseType().name())) {
                 if (requestDto instanceof UserRegistrationRequestDto) {
