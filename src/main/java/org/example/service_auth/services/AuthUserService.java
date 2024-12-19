@@ -10,8 +10,6 @@ import org.example.service_auth.exceptions.AlreadyExistException;
 import org.example.service_auth.jwt.JwtService;
 import org.example.service_auth.models.Role;
 import org.example.service_auth.models.User;
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class AuthUserService implements AuthService<UserDto, UserRegistrationRequestDto> {
+public class AuthUserService implements AuthService<UserDto> {
     private static final String SERVICE_TYPE = "USER";
     private final UserService userService;
     private final JwtService jwtService;
@@ -91,12 +89,6 @@ public class AuthUserService implements AuthService<UserDto, UserRegistrationReq
                 .handle(this::generateUserToken);
     }
 
-    @Override
-    public Mono<Object> logout(String accessToken, ServerHttpResponse response, ServerHttpRequest request) {
-        return null;
-    }
-
-    @Override
     public Mono<UserDto> getUserData(AccessTokenValue accessToken) {
         return null;
     }
@@ -108,5 +100,10 @@ public class AuthUserService implements AuthService<UserDto, UserRegistrationReq
         claims.put("scope", List.of(user.getRole()));
         claims.put("type", "USER");
         sink.next(jwtService.generateToken(claims));
+    }
+
+    @Override
+    public Class<?> getKey() {
+        return AuthUserService.class;
     }
 }

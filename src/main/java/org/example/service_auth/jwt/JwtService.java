@@ -59,6 +59,7 @@ public class JwtService {
         UUID generatUid = UUID.randomUUID();
         String uid = generatUid.toString();
         Date accessTokenExp = new Date(now + jwtConfig.getExpiration() * 1000L);
+        Date refreshTokenExp = new Date(now + jwtConfig.getRefreshExpiration() * 1000L);
         String accessToken = Jwts.builder()
                 .claims(claims)
                 .id(uid)
@@ -73,11 +74,12 @@ public class JwtService {
                 .claim("id", claims.get("id"))
                 .issuer(jwtConfig.getIssuer())
                 .issuedAt(new Date(now))
-                .expiration(new Date(now + jwtConfig.getRefreshExpiration() * 1000L))
+                .expiration(refreshTokenExp)
                 .signWith(Keys.hmacShaKeyFor(jwtConfig.getRefreshSecret().getBytes(StandardCharsets.UTF_8)))
                 .compact();
 
-        return new Token(accessToken, accessTokenExp.getTime(), refreshToken);
+        return new Token(accessToken, accessTokenExp.getTime() / 1000 - now,
+                refreshToken, refreshTokenExp.getTime() / 1000 - now);
     }
 
     private String getUsername(Claims claims) {

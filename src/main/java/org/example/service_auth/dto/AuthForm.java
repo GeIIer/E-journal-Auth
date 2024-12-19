@@ -2,6 +2,7 @@ package org.example.service_auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Data;
+import org.example.service_auth.dto.enums.ResponseTypeEnum;
 
 @Data
 public class AuthForm {
@@ -17,12 +18,5 @@ public class AuthForm {
     private String redirectTo;
 
     private Boolean decode = Boolean.FALSE;
-
-    public String getAccessToken() {
-        return token_access;
-    }
-
-    public String getRefreshToken() {
-        return token_refresh;
-    }
+    private ResponseTypeEnum responseType;
 }

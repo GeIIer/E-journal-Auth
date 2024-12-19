@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .authenticationManager(authenticationManager)
                 .securityContextRepository(securityContextRepository)
                 .authorizeExchange(authorizeExchangeSpec -> {
-                    authorizeExchangeSpec.pathMatchers("/auth/**").permitAll();
+                    authorizeExchangeSpec.pathMatchers("/**").permitAll();
                     authorizeExchangeSpec.pathMatchers("/user/**").hasRole("ADMIN");
                     authorizeExchangeSpec.anyExchange().authenticated();
                 })
