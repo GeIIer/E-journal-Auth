@@ -9,6 +9,7 @@ services:
     ports:
       - '8081:8081'
     environment:
+      - 'POSTGRES_URL=jdbc:postgresql://postgres:5432/journal'
       - 'POSTGRES_PASSWORD=13112001UJL'
       - 'POSTGRES_USER=geller'
       - 'EUREKA_URI=http://discovery:8761/eureka'

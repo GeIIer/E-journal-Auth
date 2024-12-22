@@ -2,7 +2,7 @@ spring:
   application:
     name: e-journal-auth
   datasource:
-    url: jdbc:postgresql://postgres:5432/journal
+    url: '${POSTGRES_URL}'
     password: '${POSTGRES_PASSWORD}'
     username: '${POSTGRES_USER}'
   jpa:
