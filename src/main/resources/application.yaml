@@ -1,6 +1,6 @@
 spring:
   application:
-    name: e-journal-auth
+    name: ${APP_NAME:e-journal-auth}
   datasource:
     url: '${POSTGRES_URL}'
     password: '${POSTGRES_PASSWORD}'
